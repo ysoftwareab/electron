@@ -795,13 +795,21 @@ void NativeWindowMac::SetContentSizeConstraints(
 
 bool NativeWindowMac::MoveAbove(const std::string& sourceId) {
   const content::DesktopMediaID id = content::DesktopMediaID::Parse(sourceId);
-  if (id.type != content::DesktopMediaID::TYPE_WINDOW)
+  if (id.type != content::DesktopMediaID::TYPE_WINDOW) {
+    LOG(INFO) << "NativeWindowMac::MoveAbove returning false because id.type "
+                 "!= content::DesktopMediaID::TYPE_WINDOW for source "
+              << sourceId;
     return false;
+  }
 
   // Check if the window source is valid.
   const CGWindowID window_id = id.id;
-  if (!webrtc::GetWindowOwnerPid(window_id))
+  if (!webrtc::GetWindowOwnerPid(window_id)) {
+    LOG(INFO) << "NativeWindowMac::MoveAbove returning false "
+                 "webrtc::GetWindowOwnerPid(window_id) for source "
+              << sourceId;
     return false;
+  }
 
   [window_ orderWindow:NSWindowAbove relativeTo:id.id];
 

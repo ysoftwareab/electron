@@ -3350,13 +3350,20 @@ describe('BrowserWindow module', () => {
     ifdescribe(process.platform === 'darwin')('BrowserWindow.setFullScreen(false) when HTML fullscreen', () => {
       it('exits HTML fullscreen when window leaves fullscreen', async () => {
         const w = new BrowserWindow();
+        console.log('in fullscreen test, about to load blank');
         await w.loadURL('about:blank');
+        console.log('in fullscreen test, about to call document.body.webkitRequestFullscreen');
         await w.webContents.executeJavaScript('document.body.webkitRequestFullscreen()', true);
+        console.log('in fullscreen test, about to wait for enter-full-screen');
         await emittedOnce(w, 'enter-full-screen');
+        console.log('in fullscreen test, got enter-full-screen');
         // Wait a tick for the full-screen state to 'stick'
         await delay();
+        console.log('in fullscreen test, done delay');
         w.setFullScreen(false);
+        console.log('in fullscreen test wait for leave-html-full-screen');
         await emittedOnce(w, 'leave-html-full-screen');
+        console.log('in fullscreen test done wait for leave-html-full-screen');
       });
     });
   });
@@ -4048,13 +4055,17 @@ describe('BrowserWindow module', () => {
         const w = new BrowserWindow({ resizable: false });
         const enterFullScreen = emittedOnce(w, 'enter-full-screen');
         w.setFullScreen(true);
+        console.log('Awaiting enter-full-screen');
         await enterFullScreen;
+        console.log('Done Awaiting enter-full-screen');
         expect(w.resizable).to.be.true('resizable');
-
+        console.log('Awaiting delay');
         await delay();
+        console.log('Done Awaiting delay; now wait for leave-full-screen');
         const leaveFullScreen = emittedOnce(w, 'leave-full-screen');
         w.setFullScreen(false);
         await leaveFullScreen;
+        console.log('Done Awaiting leave-full-screen');
         expect(w.resizable).to.be.false('resizable');
       });
     });
