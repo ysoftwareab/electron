@@ -17,6 +17,8 @@
 #include "ui/views/widget/native_widget_mac.h"
 
 using TitleBarStyle = electron::NativeWindowMac::TitleBarStyle;
+using FullScreenTransitionState =
+    electron::NativeWindowMac::FullScreenTransitionState;
 
 @implementation ElectronNSWindowDelegate
 
@@ -211,7 +213,7 @@ using TitleBarStyle = electron::NativeWindowMac::TitleBarStyle;
 }
 
 - (void)windowWillEnterFullScreen:(NSNotification*)notification {
-  shell_->SetEnteringFullScreen(true);
+  shell_->SetFullScreenTransitionState(FullScreenTransitionState::ENTERING);
 
   // Setting resizable to true before entering fullscreen
   is_resizable_ = shell_->IsResizable();
@@ -225,7 +227,7 @@ using TitleBarStyle = electron::NativeWindowMac::TitleBarStyle;
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification*)notification {
-  shell_->SetEnteringFullScreen(false);
+  shell_->SetFullScreenTransitionState(FullScreenTransitionState::NONE);
 
   shell_->NotifyWindowEnterFullScreen();
 
@@ -255,10 +257,12 @@ using TitleBarStyle = electron::NativeWindowMac::TitleBarStyle;
     [window setTitlebarAppearsTransparent:NO];
     shell_->SetStyleMask(true, NSWindowStyleMaskFullSizeContentView);
   }
+
+  shell_->HandlePendingFullscreenTransitions();
 }
 
 - (void)windowWillExitFullScreen:(NSNotification*)notification {
-  shell_->SetExitingFullScreen(true);
+  shell_->SetFullScreenTransitionState(FullScreenTransitionState::EXITING);
 
   // Restore the titlebar visibility.
   NSWindow* window = shell_->GetNativeWindow().GetNativeNSWindow();
@@ -279,13 +283,15 @@ using TitleBarStyle = electron::NativeWindowMac::TitleBarStyle;
 }
 
 - (void)windowDidExitFullScreen:(NSNotification*)notification {
-  shell_->SetExitingFullScreen(false);
+  shell_->SetFullScreenTransitionState(FullScreenTransitionState::NONE);
 
   shell_->SetResizable(is_resizable_);
   shell_->NotifyWindowLeaveFullScreen();
   if (shell_->title_bar_style() == TitleBarStyle::HIDDEN) {
     shell_->RedrawTrafficLights();
   }
+
+  shell_->HandlePendingFullscreenTransitions();
 }
 
 - (void)windowWillClose:(NSNotification*)notification {
