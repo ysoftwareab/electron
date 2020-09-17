@@ -808,7 +808,15 @@ void NativeWindowMac::SetFullScreen(bool fullscreen) {
   // in process. This can create weird behavior (incl. phantom windows),
   // so we want to schedule a transition for when the current one has completed.
   if (fullscreen_transition_state() != FullScreenTransitionState::NONE) {
-    pending_transitions_.push(fullscreen);
+    if (!pending_transitions_.empty()) {
+      bool last_pending = pending_transitions_.back();
+      // Only push new transitions if they're different than the last transition
+      // in the queue.
+      if (last_pending != fullscreen)
+        pending_transitions_.push(fullscreen);
+    } else {
+      pending_transitions_.push(fullscreen);
+    }
     return;
   }
 
