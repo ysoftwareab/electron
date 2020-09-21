@@ -18,7 +18,7 @@ vars = {
   'node_version':
     'v14.14.0',
   'nan_version':
-    '2c4ee8a32a299eada3cd6e468bbd0a473bfea96d',
+    '8e4603d00fcbb5069b04da1368939d885163e2ce',
   'squirrel.mac_version':
     'a3a5b3f03b824441c014893b18f99a103b2603e9',
 
