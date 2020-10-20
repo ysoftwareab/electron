@@ -43,7 +43,7 @@ describe('version-bumper', () => {
 
   // On macOS/Linux arm/arm64 Circle CI we don't have a real git environment due to running
   // gclient sync on a linux machine. These tests therefore don't run as expected.
-  const skipTests = ((process.platform === 'linux' && process.arch.includes('arm')) && process.platform !== 'darwin');
+  const runTests = (!(process.platform === 'linux' && process.arch.includes('arm')) && process.platform !== 'darwin');
   describe('nextVersion', () => {
     const nightlyPattern = /[0-9.]*(-nightly.(\d{4})(\d{2})(\d{2}))$/g;
     const betaPattern = /[0-9.]*(-beta[0-9.]*)/g;
@@ -90,13 +90,13 @@ describe('version-bumper', () => {
       expect(matches).to.have.lengthOf(1);
     });
 
-    ifit(!skipTests)('bumps to beta from beta', async () => {
+    ifit(runTests)('bumps to beta from beta', async () => {
       const version = 'v2.0.0-beta.8';
       const next = await nextVersion('beta', version);
       expect(next).to.equal('2.0.0-beta.9');
     });
 
-    ifit(!skipTests)('bumps to beta from beta if the previous beta is at least beta.10', async () => {
+    ifit(runTests)('bumps to beta from beta if the previous beta is at least beta.10', async () => {
       const version = 'v6.0.0-beta.10';
       const next = await nextVersion('beta', version);
       // Last 6.0.0 beta we did was beta.15
