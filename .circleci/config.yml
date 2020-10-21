@@ -87,6 +87,10 @@ machine-linux-arm64: &machine-linux-arm64
   machine: true
   resource_class: electronjs/linux-arm64
 
+machine-linux-arm: &machine-linux-arm
+  machine: true
+  resource_class: electronjs/linux-arm
+
 machine-mac: &machine-mac
   macos:
     xcode: "12.2.0"
@@ -2447,7 +2451,7 @@ jobs:
     <<: *steps-tests
 
   linux-arm-testing-tests:
-    <<: *machine-linux-arm64
+    <<: *machine-linux-arm
     environment:
       <<: *env-arm
       <<: *env-headless-testing
