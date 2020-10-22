@@ -2453,7 +2453,7 @@ jobs:
   linux-arm-testing-tests:
     <<: *machine-linux-arm
     environment:
-      <<: *env-arm
+      <<: *env-arm64
       <<: *env-headless-testing
     <<: *steps-tests    
 
