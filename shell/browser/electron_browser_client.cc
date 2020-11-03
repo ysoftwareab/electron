@@ -124,6 +124,7 @@
 #include "components/spellcheck/common/spellcheck.mojom.h"  // nogncheck
 #if BUILDFLAG(HAS_SPELLCHECK_PANEL)
 #include "chrome/browser/spellchecker/spell_check_panel_host_impl.h"  // nogncheck
+#include "shell/browser/ui/cocoa/electron_web_contents_view_delegate.h"
 #endif
 #endif
 
@@ -1693,6 +1694,14 @@ void ElectronBrowserClient::GetAdditionalMappedFilesForChildProcess(
   if (crash_signal_fd >= 0) {
     mappings->Share(kCrashDumpSignal, crash_signal_fd);
   }
+}
+#endif
+
+#if BUILDFLAG(ENABLE_BUILTIN_SPELLCHECKER) && BUILDFLAG(HAS_SPELLCHECK_PANEL)
+content::WebContentsViewDelegate*
+ElectronBrowserClient::GetWebContentsViewDelegate(
+    content::WebContents* web_contents) {
+  return new ElectronWebContentsViewDelegate();
 }
 #endif
 
