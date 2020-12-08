@@ -136,7 +136,7 @@ WebContentsPreferences::WebContentsPreferences(
                 "more information",
                 "electron");
   }
-  SetDefaultBoolIfUndefined(options::kContextIsolation, false);
+  SetDefaultBoolIfUndefined(options::kContextIsolation, true);
   SetDefaultBoolIfUndefined(options::kWorldSafeExecuteJavaScript, false);
   SetDefaultBoolIfUndefined(options::kJavaScript, true);
   SetDefaultBoolIfUndefined(options::kImages, true);
