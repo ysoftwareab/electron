@@ -1589,7 +1589,6 @@ ifdescribe((process.platform !== 'linux' || app.isUnityRunning()))('navigator.se
     const result = await fireAppBadgeAction('set', 42);
     expect(result).to.equal('success');
     expect(waitForBadgeCount(expectedBadgeCount)).to.eventually.equal(expectedBadgeCount);
-    expect(app.getBadgeCount()).to.equal(expectedBadgeCount);
   });
 
   it('setAppBadge can set an empty(dot) value', async () => {
