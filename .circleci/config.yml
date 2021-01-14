@@ -2385,15 +2385,6 @@ jobs:
       <<: *env-send-slack-notifications
     <<: *steps-verify-ffmpeg
 
-  osx-verify-arm64-hw:
-    <<: *machine-mac-arm64
-    steps:
-      - run:
-          name: Running tests
-          command: |
-            uname -a
-            echo "Hello from arm64"
-
   osx-testing-arm64-tests:  
     <<: *machine-mac-arm64
     environment:
@@ -2627,7 +2618,6 @@ workflows:
     jobs:
       - mac-checkout-fast
       - mac-checkout-and-save-cache
-      - osx-verify-arm64-hw
 
       - osx-testing-x64:
           requires:
