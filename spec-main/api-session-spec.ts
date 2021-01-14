@@ -558,12 +558,8 @@ describe('session module', () => {
       const ses = session.fromPartition(`${Math.random()}`);
       ses.setCertificateVerifyProc(({ verificationResult, errorCode }, callback) => {
         console.log('verificationResult:', verificationResult);
-        if (process.platform !== 'darwin' || process.arch !== 'arm64') {
-          expect(['net::ERR_CERT_AUTHORITY_INVALID', 'net::ERR_CERT_COMMON_NAME_INVALID'].includes(verificationResult)).to.be.true();
-        } else {
-          // TODO (jkleinsc) macos arm64 returns CERT_STATUS_INVALID or :ERR_FAILED - remove condition once this is fixed upstream
-          expect(['net::CERT_STATUS_INVALID', 'net::ERR_FAILED'].includes(verificationResult)).to.be.true();
-        }
+        console.log('errorCode:', errorCode);
+        expect(['net::ERR_CERT_AUTHORITY_INVALID', 'net::ERR_CERT_COMMON_NAME_INVALID'].includes(verificationResult)).to.be.true();
         expect([-202, -200].includes(errorCode)).to.be.true();
         callback(0);
       });
