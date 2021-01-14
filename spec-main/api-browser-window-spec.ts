@@ -799,7 +799,8 @@ describe('BrowserWindow module', () => {
         });
       });
 
-      it('should not throw an exception', async () => {
+      // TODO (jkleinsc) renable this test on macos arm64 once https://github.com/electron/electron/issues/27323 is fixed.
+      ifit(process.platform !== 'darwin' || process.arch !== 'arm64')('should not throw an exception', async () => {
         const w2 = new BrowserWindow({ show: false, title: 'window2' });
         const w2Shown = emittedOnce(w2, 'show');
         w2.show();
