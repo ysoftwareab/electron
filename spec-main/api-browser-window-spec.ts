@@ -3982,7 +3982,7 @@ describe('BrowserWindow module', () => {
     });
 
     ifdescribe(process.platform === 'darwin')('fullscreenable state', () => {
-      it('with functions', () => {
+      describe('with functions', () => {
         it('can be set with fullscreenable constructor option', () => {
           const w = new BrowserWindow({ show: false, fullscreenable: false });
           expect(w.isFullScreenable()).to.be.false('isFullScreenable');
@@ -4002,7 +4002,8 @@ describe('BrowserWindow module', () => {
     // fullscreen events are dispatched eagerly and twiddling things too fast can confuse poor Electron
 
     ifdescribe(process.platform === 'darwin')('kiosk state', () => {
-      it('with properties', () => {
+      describe('with properties', () => {
+        console.log('In kiosk state with properties');
         it('can be set with a constructor property', () => {
           const w = new BrowserWindow({ kiosk: true });
           expect(w.kiosk).to.be.true();
@@ -4025,7 +4026,8 @@ describe('BrowserWindow module', () => {
       });
 
       it('with functions', () => {
-        it('can be set with a constructor property', () => {
+        console.log('In kiosk state with functions');
+        describe('can be set with a constructor property', () => {
           const w = new BrowserWindow({ kiosk: true });
           expect(w.isKiosk()).to.be.true();
         });
