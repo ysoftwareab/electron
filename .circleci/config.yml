@@ -79,10 +79,6 @@ machine-linux-xlarge: &machine-linux-xlarge
   <<: *docker-image
   resource_class: xlarge
 
-machine-linux-2xlarge: &machine-linux-2xlarge
-  <<: *docker-image
-  resource_class: 2xlarge+
-
 machine-mac: &machine-mac
   macos:
     xcode: "12.2.0"
@@ -168,11 +164,11 @@ env-linux-medium: &env-linux-medium
   <<: *env-global
   NUMBER_OF_NINJA_PROCESSES: 3
 
-env-linux-2xlarge: &env-linux-2xlarge
+env-linux-xlarge: &env-linux-xlarge
   <<: *env-global
   NUMBER_OF_NINJA_PROCESSES: 34
 
-env-linux-2xlarge-release: &env-linux-2xlarge-release
+env-linux-xlarge-release: &env-linux-xlarge-release
   <<: *env-global
   NUMBER_OF_NINJA_PROCESSES: 16
 
@@ -1660,9 +1656,9 @@ jobs:
 
   # Layer 1: Checkout.
   linux-checkout:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_arm=True --custom-var=checkout_arm64=True'
     steps:
       - electron-build:
@@ -1673,9 +1669,9 @@ jobs:
           restore-src-cache: false
 
   linux-checkout-fast:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_arm=True --custom-var=checkout_arm64=True'
     steps:
       - electron-build:
@@ -1685,16 +1681,16 @@ jobs:
           persist-checkout: true
 
   linux-checkout-and-save-cache:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_arm=True --custom-var=checkout_arm64=True'
     <<: *steps-checkout-and-save-cache
 
   linux-checkout-for-native-tests:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_pyyaml=True'
     steps:
       - electron-build:
@@ -1704,9 +1700,9 @@ jobs:
           persist-checkout: true
 
   linux-checkout-for-native-tests-with-no-patches:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       GCLIENT_EXTRA_ARGS: '--custom-var=apply_patches=False --custom-var=checkout_pyyaml=True'
     steps:
       - electron-build:
@@ -1716,9 +1712,9 @@ jobs:
           persist-checkout: true
 
   mac-checkout:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-testing-build
       <<: *env-macos-build
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_mac=True --custom-var=host_os=mac'
@@ -1731,9 +1727,9 @@ jobs:
           restore-src-cache: false
 
   mac-checkout-fast:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-testing-build
       <<: *env-macos-build
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_mac=True --custom-var=host_os=mac'
@@ -1745,9 +1741,9 @@ jobs:
           persist-checkout: true
 
   mac-checkout-and-save-cache:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-testing-build
       <<: *env-macos-build
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_mac=True --custom-var=host_os=mac'
@@ -1755,7 +1751,7 @@ jobs:
 
   # Layer 2: Builds.
   linux-x64-testing:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
       <<: *env-global
       <<: *env-testing-build
@@ -1768,9 +1764,9 @@ jobs:
           use-out-cache: false
 
   linux-x64-testing-no-run-as-node:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-testing-build
       <<: *env-ninja-status
       <<: *env-disable-run-as-node
@@ -1789,9 +1785,9 @@ jobs:
     <<: *steps-electron-gn-check
 
   linux-x64-release:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-release-build
       <<: *env-send-slack-notifications
       <<: *env-ninja-status
@@ -1802,9 +1798,9 @@ jobs:
           checkout: true
 
   linux-x64-publish:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-release-build
       UPLOAD_TO_S3: << pipeline.parameters.upload-to-s3 >>
       <<: *env-ninja-status
@@ -1814,9 +1810,9 @@ jobs:
           checkout: true
 
   linux-x64-publish-skip-checkout:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-release-build
       UPLOAD_TO_S3: << pipeline.parameters.upload-to-s3 >>
       <<: *env-ninja-status
@@ -1826,7 +1822,7 @@ jobs:
           checkout: false
 
   linux-ia32-testing:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
       <<: *env-global
       <<: *env-ia32
@@ -1840,9 +1836,9 @@ jobs:
           use-out-cache: false
 
   linux-ia32-release:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-ia32
       <<: *env-release-build
       <<: *env-send-slack-notifications
@@ -1854,9 +1850,9 @@ jobs:
           checkout: true
 
   linux-ia32-publish:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-ia32
       <<: *env-release-build
       <<: *env-32bit-release
@@ -1868,9 +1864,9 @@ jobs:
           checkout: true
 
   linux-ia32-publish-skip-checkout:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-ia32
       <<: *env-release-build
       <<: *env-32bit-release
@@ -1882,7 +1878,7 @@ jobs:
           checkout: false
 
   linux-arm-testing:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
       <<: *env-global
       <<: *env-arm
@@ -1897,9 +1893,9 @@ jobs:
           use-out-cache: false
 
   linux-arm-release:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-arm
       <<: *env-release-build
       <<: *env-send-slack-notifications
@@ -1911,9 +1907,9 @@ jobs:
           checkout: true
 
   linux-arm-publish:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-arm
       <<: *env-release-build
       <<: *env-32bit-release
@@ -1926,9 +1922,9 @@ jobs:
           checkout: true
 
   linux-arm-publish-skip-checkout:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-arm
       <<: *env-release-build
       <<: *env-32bit-release
@@ -1940,7 +1936,7 @@ jobs:
           checkout: false
 
   linux-arm64-testing:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
       <<: *env-global
       <<: *env-arm64
@@ -1963,9 +1959,9 @@ jobs:
     <<: *steps-electron-gn-check
 
   linux-arm64-release:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-arm64
       <<: *env-release-build
       <<: *env-send-slack-notifications
@@ -1977,9 +1973,9 @@ jobs:
           checkout: true
 
   linux-arm64-publish:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-arm64
       <<: *env-release-build
       GCLIENT_EXTRA_ARGS: '--custom-var=checkout_arm64=True'
@@ -1991,9 +1987,9 @@ jobs:
           checkout: true
 
   linux-arm64-publish-skip-checkout:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge-release
+      <<: *env-linux-xlarge-release
       <<: *env-arm64
       <<: *env-release-build
       UPLOAD_TO_S3: << pipeline.parameters.upload-to-s3 >>
@@ -2213,35 +2209,35 @@ jobs:
 
   # Layer 3: Tests.
   linux-x64-unittests:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-unittests
       <<: *env-headless-testing
     <<: *steps-native-tests
 
   linux-x64-disabled-unittests:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-unittests
       <<: *env-headless-testing
       TESTS_ARGS: '--only-disabled-tests'
     <<: *steps-native-tests
 
   linux-x64-chromium-unittests:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-unittests
       <<: *env-headless-testing
       TESTS_ARGS: '--include-disabled-tests'
     <<: *steps-native-tests
 
   linux-x64-browsertests:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
-      <<: *env-linux-2xlarge
+      <<: *env-linux-xlarge
       <<: *env-browsertests
       <<: *env-testing-build
       <<: *env-headless-testing
@@ -2265,7 +2261,7 @@ jobs:
     <<: *steps-test-nan
 
   linux-x64-testing-node:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
       <<: *env-linux-medium
       <<: *env-headless-testing
@@ -2308,7 +2304,7 @@ jobs:
     <<: *steps-test-nan
 
   linux-ia32-testing-node:
-    <<: *machine-linux-2xlarge
+    <<: *machine-linux-xlarge
     environment:
       <<: *env-linux-medium
       <<: *env-ia32
